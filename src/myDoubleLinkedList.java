@@ -1,21 +1,22 @@
 import java.util.*;
 
 public class myDoubleLinkedList<E> {
-    int size = 0;
+    private int size = 0;
 
     /**
      * Pointer to first node.
      */
-    myDoubleLinkedList.Node<E> head;
+    private myDoubleLinkedList.Node<E> head;
 
     /**
      * Pointer to last node.
      */
 
-    myDoubleLinkedList.Node<E> tail;
+    private myDoubleLinkedList.Node<E> tail;
 
 
     protected myDoubleLinkedList() {
+
     }
 
     public void print() {
@@ -36,9 +37,9 @@ public class myDoubleLinkedList<E> {
         System.out.println("\n");
     }
 
-    public E get(int index) {
+    public E get(int index) throws Exception {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(index);
+            throw new Exception("afdsaa");
         } else {
             Node<E> curNode = head;
             for (int i = 0; i < index; i++) {
@@ -46,6 +47,14 @@ public class myDoubleLinkedList<E> {
             }
             return curNode.item;
         }
+    }
+
+    private Node<E> node(int index) {
+        Node<E> temp = head;
+        for (int i = 0; i < index; i++) {
+            temp = temp.next;
+        }
+        return temp;
     }
 
     public E set(int index, E element) {
@@ -91,10 +100,10 @@ public class myDoubleLinkedList<E> {
         }
         if (index == 0) {
             insertAtHead(element);
-        } else if (index == size() - 1) {
+        } else if (index == size() - 1 && size > 2) {
             insertAtTail(element);
         } else {
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 0; i < index - 2; i++) {
                 curnode = curnode.next;
             }
             curnode.next = new Node<>(curnode, element, curnode.next);
@@ -107,8 +116,46 @@ public class myDoubleLinkedList<E> {
         size++;
     }
 
+    private E unlink(Node<E> x) {
+        Node<E> before = x.prev;
+        E element = x.item;
+        Node<E> after = x.next;
+        if (before == null) {
+            after.prev = null;
+            x.next = null;
+            head = after;
+        } else if (after == null) {
+            before.next = null;
+            x.prev = null;
+            tail = before;
+        } else {
+            before.next = after;
+            x.next = null;
+            x.prev = null;
+            after.prev = before;
+        }
+        x.item = null;
+        size--;
+        return element;
+    }
+
     public E remove(int index) {
-        return head.item;
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException(index);
+        } else {
+            return unlink(node(index));
+        }
+    }
+
+    public int indexOf(Node<E> o) {
+        Node<E> temp = head;
+        for (int i = 0; i < size; i++) {
+            if (o.equals(temp)) {
+                return i;
+            }
+            temp = temp.next;
+        }
+        return -1;
     }
 
     public boolean addAll(int index, Collection<? extends E> c) {
@@ -146,7 +193,7 @@ public class myDoubleLinkedList<E> {
 
     class iterator implements ListIterator<E> {
         private myDoubleLinkedList.Node<E> curNode = head;
-        private myDoubleLinkedList.Node<E> next = tail;
+        private myDoubleLinkedList.Node<E> temp = head;
         private int index = 0;
 
         iterator() {
@@ -157,7 +204,7 @@ public class myDoubleLinkedList<E> {
             if (index < 0 || index >= size) {
                 throw new IndexOutOfBoundsException(index);
             } else {
-                for (int i = 0; i < index; i++) {
+                for (int i = 0; i < index-1; i++) {
                     curNode = curNode.next;
                     index++;
                 }
@@ -174,12 +221,13 @@ public class myDoubleLinkedList<E> {
 
         @Override
         public boolean hasNext() {
-            return curNode.next != null;
+            //return curNode.next != null;
+            return index < size;
         }
 
         @Override
         public E next() {
-            myDoubleLinkedList.Node<E> temp = curNode;
+            temp = curNode;
             if (hasNext()) {
                 curNode = curNode.next;
                 index++;
@@ -224,7 +272,13 @@ public class myDoubleLinkedList<E> {
 
         @Override
         public void remove() {
-
+            if (!contains(node(index).item)) {
+                throw new NoSuchElementException();
+            } else {
+                int index = indexOf(temp);
+                System.out.println("indexOf:" + index);
+                unlink(node(index));
+            }
         }
 
         @Override
