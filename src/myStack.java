@@ -3,6 +3,7 @@ public class myStack<E> {
     private int capacity = 3;
     private int size = 0;
 
+    @SuppressWarnings("unchecked")
     public myStack() {
         capacity = 10;
         arr = (E[]) new Object[capacity];
@@ -18,15 +19,15 @@ public class myStack<E> {
         return element;
     }
 
-    //unchecked//
+    @SuppressWarnings("unchecked")
     public void push(E element) {
         if (size + 1 >= capacity) {
             capacity *= 2;
-            E[] newarr = (E[]) new Object[capacity];
+            E[] newArr = (E[]) new Object[capacity];
             for (int i = 0; i < size; i++) {
-                newarr[i] = arr[i];
+                newArr[i] = arr[i];
             }
-            arr = newarr;
+            arr = newArr;
         }
         arr[size] = element;
         size++;
@@ -49,17 +50,17 @@ public class myStack<E> {
         }
         return -1;
     }
-
+    @SuppressWarnings("unchecked")
     public void remove(E element) {
-        E[] newarr = (E[]) new Object[capacity];
+        E[] newArr = (E[]) new Object[capacity];
         int k = 0;
         int index = indexOf(element);
         for (int i = 0; i < size; i++) {
             if (i == index)
                 continue;
-            newarr[k++] = arr[i];
+            newArr[k++] = arr[i];
         }
-        arr = newarr;
+        arr = newArr;
         size--;
         //return element;
     }
@@ -74,12 +75,12 @@ public class myStack<E> {
 
     @Override
     public String toString() {
-        String res = "[ ";
+        StringBuilder res = new StringBuilder("[ ");
         for (int i = 0; i < size; i++) {
-            res += arr[i] + " ";
+            res.append(arr[i]).append(" ");
         }
-        res += "]\n";
-        return res;
+        res.append("]\n");
+        return res.toString();
     }
 
 
