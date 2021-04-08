@@ -2,6 +2,26 @@ public class mySingleLinkedList<E> {
     private Node<E> head = null;
     private int size = 0;
 
+    public void swap(){
+        int len = 0;
+        Node<E> curNode = head;
+        while(curNode.next != null){
+            curNode = curNode.next;
+            len++;
+        }
+        Node<E> before = head;
+        for (int i = 0; i < len/2-1; i++) {
+            before = before.next;
+        }
+        Node<E> mid = before.next;
+        Node<E> after = mid.next;
+
+        mid.next = head.next;
+        head.next = after;
+        before.next = head;
+        head = mid;
+    }
+
     void addFirst(E item) {
         head = new Node<>(item, head);
         size++;
@@ -48,7 +68,7 @@ public class mySingleLinkedList<E> {
     }
 
     void print() {
-        myIterator<E> it = iterator();
+        myIterator it = iterator();
         for (int i = 0; i < getSize(); i++) {
             System.out.print(it.next() + " ");
         }
@@ -100,11 +120,11 @@ public class mySingleLinkedList<E> {
         return node.data;
     }
 
-    public myIterator<E> iterator() {
-        return new myIterator<E>(0);
+    public myIterator iterator() {
+        return new myIterator(0);
     }
-
-    class myIterator<E> {
+//---------------------------------------------------------------
+    class myIterator {
         Node curNode = head;
 
         public myIterator(int index) {
